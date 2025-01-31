@@ -99,7 +99,9 @@ This version includes new random text display mode and improved preview system. 
 
 == Contributing ==
 
-We welcome contributions from the WordPress community! If you'd like to contribute to this plugin, please:
+We welcome contributions from the WordPress community! If you'd like to contribute to this plugin, please visit our GitHub repository:
+
+[Advanced Preloader on GitHub](https://github.com/sanjuacodez/advanced-preloader)
 
 1. Fork the repository
 2. Create a feature branch
@@ -111,8 +113,8 @@ Please follow WordPress coding standards and include documentation for any new f
 == Support ==
 
 For support, feature requests, or bug reports, please:
-* Open an issue on our GitHub repository
-* Visit our support forum
+* Visit our [GitHub repository](https://github.com/sanjuacodez/advanced-preloader)
+* Open an issue on GitHub
 * Contact us through our website
 
 Let's make WordPress better together!
@@ -120,3 +122,5 @@ Let's make WordPress better together!
 == License ==
 
 This plugin is licensed under the GPLv2 or later. This means you're free to use, modify, and distribute this software as long as you preserve the GPL license terms.
+
+Source code available on GitHub: [https://github.com/sanjuacodez/advanced-preloader](https://github.com/sanjuacodez/advanced-preloader)
