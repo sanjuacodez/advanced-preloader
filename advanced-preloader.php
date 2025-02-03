@@ -9,15 +9,20 @@ Author URI: https://acodez.in
 License: GPL2
 */
 
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 // Enqueue necessary scripts and styles
 function advanced_preloader_enqueue_scripts()
 {
-    $options = get_option('advanced_preloader_general', []); // Get options with a default empty array
-    $enabled = isset($options['enabled']) ? $options['enabled'] : '0'; // Default to '0' if 'enabled' key is not set
+    $options = get_option('advanced_preloader_general', []);
+    $enabled = isset($options['enabled']) ? $options['enabled'] : '0';
 
     if ($enabled == '1') {
-        wp_enqueue_style('advanced-preloader-style', plugin_dir_url(__FILE__) . 'assets/style.css');
-        wp_enqueue_script('advanced-preloader-script', plugin_dir_url(__FILE__) . 'assets/script.js', array('jquery'), null, true);
+        wp_enqueue_style('advanced-preloader-style', plugin_dir_url(__FILE__) . 'assets/style.css', array(), filemtime(plugin_dir_path(__FILE__) . 'assets/style.css'), 'all');
+        wp_enqueue_script('advanced-preloader-script', plugin_dir_url(__FILE__) . 'assets/script.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'assets/script.js'), true);
     }
 }
 add_action('wp_enqueue_scripts', 'advanced_preloader_enqueue_scripts');
@@ -25,24 +30,23 @@ add_action('wp_enqueue_scripts', 'advanced_preloader_enqueue_scripts');
 // Enqueue media uploader script for admin
 function advanced_preloader_admin_scripts($hook)
 {
-    // Check if we are on the plugin's settings page
     if ($hook === 'toplevel_page_advanced-preloader') {
-        wp_enqueue_media(); // Enqueue WordPress media uploader
-        wp_enqueue_script('advanced-preloader-admin-script', plugin_dir_url(__FILE__) . 'assets/admin/admin.js', array('jquery'), null, true);
+        wp_enqueue_media();
+        wp_enqueue_script('advanced-preloader-admin-script', plugin_dir_url(__FILE__) . 'assets/admin/admin.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'assets/admin/admin.js'), true);
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('wp-color-picker');
-        // Add new admin CSS
-        wp_enqueue_style('advanced-preloader-admin-style', plugin_dir_url(__FILE__) . 'assets/admin/admin.css');
-        // Add preview update script
-        wp_enqueue_script('advanced-preloader-preview', plugin_dir_url(__FILE__) . 'assets/admin/preview.js', array('jquery'), null, true);
+        wp_enqueue_style('advanced-preloader-admin-style', plugin_dir_url(__FILE__) . 'assets/admin/admin.css', array(), filemtime(plugin_dir_path(__FILE__) . 'assets/admin/admin.css'), 'all');
+        wp_enqueue_script('advanced-preloader-preview', plugin_dir_url(__FILE__) . 'assets/admin/preview.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'assets/admin/preview.js'), true);
     }
 }
 add_action('admin_enqueue_scripts', 'advanced_preloader_admin_scripts');
-function advanced_preloader_sanitize_settings($input) {
-    // Initialize an array to store sanitized data
+
+// Sanitize settings
+function advanced_preloader_sanitize_settings($input)
+{
+    $input = wp_unslash($input);
     $sanitized_input = [];
 
-    // Sanitize each field based on its type
     if (isset($input['enabled'])) {
         $sanitized_input['enabled'] = sanitize_text_field($input['enabled']);
     }
@@ -52,7 +56,7 @@ function advanced_preloader_sanitize_settings($input) {
     }
 
     if (isset($input['image'])) {
-        $sanitized_input['image'] = esc_url_raw($input['image']);
+        $sanitized_input['image'] = sanitize_text_field($input['image']);
     }
 
     if (isset($input['text'])) {
@@ -89,10 +93,18 @@ function advanced_preloader_sanitize_settings($input) {
 
     return $sanitized_input;
 }
+
 // Add plugin settings page to main menu
 function advanced_preloader_settings_menu()
 {
-    add_menu_page('Advanced Preloader Settings', 'Advanced Preloader', 'manage_options', 'advanced-preloader', 'advanced_preloader_settings_page', 'dashicons-admin-generic');
+    add_menu_page(
+        'Advanced Preloader Settings',
+        'Advanced Preloader',
+        'manage_options',
+        'advanced-preloader',
+        'advanced_preloader_settings_page',
+        'dashicons-admin-generic'
+    );
 }
 add_action('admin_menu', 'advanced_preloader_settings_menu');
 
@@ -100,14 +112,23 @@ add_action('admin_menu', 'advanced_preloader_settings_menu');
 function advanced_preloader_settings_page()
 {
     $tabs = ['general', 'design', 'animation', 'advanced'];
-    $active_tab = 'general'; // Default value
+    $active_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash($_GET['tab'])) : 'general';
 
+    // Verify nonce for tab navigation if tab parameter exists
     if (isset($_GET['tab'])) {
-        // Verify nonce
-        if (wp_verify_nonce($_GET['_wpnonce'], 'advanced-preloader-tab-nonce')) {
-            $active_tab = sanitize_key(wp_unslash($_GET['tab']));
+        // Check if the nonce is set and validate it
+        if (isset($_REQUEST['_wpnonce']) && !empty($_REQUEST['_wpnonce'])) {
+            $nonce = sanitize_text_field(wp_unslash($_REQUEST['_wpnonce']));
+
+            // Verify the nonce
+            if (!wp_verify_nonce($nonce, 'advanced-preloader-tab-nonce')) {
+                wp_die('Security check failed');
+            }
+        } else {
+            wp_die('Nonce is missing or invalid');
         }
     }
+
     ?>
     <div class="wrap">
         <h1>Advanced Preloader Settings</h1>
@@ -129,6 +150,7 @@ function advanced_preloader_settings_page()
                 </a>
             <?php endforeach; ?>
         </h2>
+
         <div class="tab-content-wrapper">
             <?php foreach ($tabs as $tab): ?>
                 <div class="tab-content <?php echo $active_tab === $tab ? 'active' : 'hidden'; ?>">
@@ -154,7 +176,7 @@ function advanced_preloader_register_settings()
         register_setting(
             'advanced_preloader_settings_group_' . $tab,
             'advanced_preloader_' . $tab,
-            'advanced_preloader_sanitize_settings' // Add the sanitization callback
+            'advanced_preloader_sanitize_settings'
         );
     }
 
@@ -165,6 +187,7 @@ function advanced_preloader_register_settings()
     add_settings_field('image', 'Preloader Image', 'advanced_preloader_image_field', 'advanced-preloader-general', 'advanced_preloader_main_section');
     add_settings_field('layout_order', 'Layout Order', 'advanced_preloader_layout_order_field', 'advanced-preloader-general', 'advanced_preloader_main_section');
     add_settings_field('text', 'Preloader Text', 'advanced_preloader_text_field', 'advanced-preloader-general', 'advanced_preloader_main_section');
+    add_settings_field('text_display_mode', 'Text Display Mode', 'advanced_preloader_text_display_mode_field', 'advanced-preloader-general', 'advanced_preloader_main_section');
 
     // Design Settings
     add_settings_section('advanced_preloader_design_section', 'Design Settings', null, 'advanced-preloader-design');
@@ -179,22 +202,14 @@ function advanced_preloader_register_settings()
     // Advanced Settings
     add_settings_section('advanced_preloader_advanced_section', 'Advanced Settings', null, 'advanced-preloader-advanced');
     add_settings_field('custom_css', 'Custom CSS', 'advanced_preloader_custom_css_field', 'advanced-preloader-advanced', 'advanced_preloader_advanced_section');
-    // Add new display mode field (add to register_settings)
-    add_settings_field(
-        'text_display_mode',
-        'Text Display Mode',
-        'advanced_preloader_text_display_mode_field',
-        'advanced-preloader-general',
-        'advanced_preloader_main_section'
-    );
 }
 add_action('admin_init', 'advanced_preloader_register_settings');
 
 // Callback functions for settings fields
 function advanced_preloader_enabled_field()
 {
-    $options = get_option('advanced_preloader_general', []); // Get options with a default empty array
-    $enabled = isset($options['enabled']) ? $options['enabled'] : '1'; // Default to '1' if 'enabled' key is not set
+    $options = get_option('advanced_preloader_general', []);
+    $enabled = isset($options['enabled']) ? $options['enabled'] : '1';
     echo '<input type="checkbox" name="advanced_preloader_general[enabled]" value="1" ' . checked(1, $enabled, false) . ' /> Enable Preloader';
 }
 
@@ -212,13 +227,18 @@ function advanced_preloader_type_field()
 function advanced_preloader_image_field()
 {
     $options = get_option('advanced_preloader_general', []);
-    $image = isset($options['image']) ? $options['image'] : '';
-    echo '<input type="text" name="advanced_preloader_general[image]" id="advanced_preloader_image" value="' . esc_attr($image) . '" style="display: none;" />'; // Hidden input field
+    $image_id = isset($options['image']) ? $options['image'] : '';
+    $image_url = !empty($image_id) ? wp_get_attachment_url($image_id) : '';
+
+    echo '<input type="text" name="advanced_preloader_general[image]" id="advanced_preloader_image" value="' . esc_attr($image_id) . '" style="display: none;" />
+';
+    echo '<input type="hidden" name="advanced_preloader_general[image_url]" id="advanced_preloader_image_url" value="' . esc_url($image_url) . '" style="display: none;" />
+';
     echo '<button type="button" class="button upload_image_button">Upload Image</button>
-          <button type="button" class="button remove_image_button" style="' . (empty($image) ? 'display:none;' : '') . '">Remove Image</button>
+          <button type="button" class="button remove_image_button" style="' . (empty($image_url) ? 'display:none;' : '') . '">Remove Image</button>
           <div id="preloader_image_preview" style="margin-top: 10px;">';
-    if (!empty($image)) {
-        echo '<img src="' . esc_attr($image) . '" style="max-width: 200px; height: auto;" />';
+    if (!empty($image_url)) {
+        echo '<img src="' . esc_url($image_url) . '" style="max-width: 200px; height: auto;" />';
     }
     echo '</div>';
 }
@@ -231,7 +251,6 @@ function advanced_preloader_text_field()
     echo '<p class="description">HTML tags are allowed. Add multiple lines for random display.</p>';
 }
 
-// New callback function for display mode
 function advanced_preloader_text_display_mode_field()
 {
     $options = get_option('advanced_preloader_general');
@@ -242,7 +261,6 @@ function advanced_preloader_text_display_mode_field()
           </select>';
 }
 
-// Callback function for the layout order field
 function advanced_preloader_layout_order_field()
 {
     $options = get_option('advanced_preloader_general', []);
@@ -289,108 +307,106 @@ function advanced_preloader_custom_css_field()
 {
     $options = get_option('advanced_preloader_advanced');
     $css = isset($options['custom_css']) ? $options['custom_css'] : '';
-    echo '<textarea name="advanced_preloader_advanced[custom_css]" rows="5" cols="50">' . esc_textarea($css) . '</textarea>';
+    echo '<textarea name="advanced_preloader_advanced[custom_css]" rows="5" cols="50">' . esc_textarea(wp_strip_all_tags($css)) . '</textarea>';
 }
-
 function advanced_preloader_display()
 {
-    // Get the settings from the database
-    $general_options = get_option('advanced_preloader_general', []);
-    $enabled = isset($general_options['enabled']) ? $general_options['enabled'] : '0';
+    // Get all options in single calls
+    $general = get_option('advanced_preloader_general', []);
+    $design = get_option('advanced_preloader_design', []);
+    $animation = get_option('advanced_preloader_animation', []);
+    $advanced = get_option('advanced_preloader_advanced', []);
 
-    // Only display the preloader if it is enabled
-    if ($enabled == '1') {
-        $design_options = get_option('advanced_preloader_design', []);
-        $animation_options = get_option('advanced_preloader_animation', []);
-        $advanced_options = get_option('advanced_preloader_advanced', []);
-        $preloader_type = isset($general_options['type']) ? $general_options['type'] : 'image';
-
-        // General settings
-        $preloader_image = isset($general_options['image']) ? $general_options['image'] : '';
-        $preloader_text = isset($general_options['text']) ? $general_options['text'] : 'Loading...';
-        $layout_order = isset($general_options['layout_order']) ? $general_options['layout_order'] : 'image-over-text';
-
-        // Design settings
-        $bg_color = isset($design_options['bg_color']) ? $design_options['bg_color'] : '#ffffff';
-        $text_color = isset($design_options['text_color']) ? $design_options['text_color'] : '#000000';
-
-        // Animation settings
-        $delay_time = isset($animation_options['delay_time']) ? $animation_options['delay_time'] : '0s';
-        $animation_speed = isset($animation_options['animation_speed']) ? $animation_options['animation_speed'] : 'slow';
-
-        // Advanced settings (custom CSS)
-        $custom_css = isset($advanced_options['custom_css']) ? $advanced_options['custom_css'] : '';
-
-        // Output the preloader HTML with data attributes and layout class
-        echo '<div id="advanced-preloader" 
-                  class="' . esc_attr($layout_order) . '"
-                  data-delay="' . esc_attr($delay_time) . '" 
-                  data-animation-speed="' . esc_attr($animation_speed) . '" 
-                  style="background-color: ' . esc_attr($bg_color) . '; color: ' . esc_attr($text_color) . ';">';
-
-        // Show image only if type is image or both
-        if (($preloader_type === 'image' || $preloader_type === 'both') && !empty($preloader_image)) {
-            echo '<img src="' . esc_url($preloader_image) . '" alt="Preloader Image" />';
-        }
-
-        // Show text only if type is text or both
-        if (($preloader_type === 'text' || $preloader_type === 'both') && !empty($preloader_text)) {
-            $display_mode = isset($general_options['text_display_mode']) ? $general_options['text_display_mode'] : 'full';
-
-            if ($display_mode === 'random') {
-                $lines = array_filter(explode("\n", $preloader_text));
-                $random_line = !empty($lines) ? $lines[array_rand($lines)] : $preloader_text;
-                echo '<div class="preloader-text">' . wp_kses_post($random_line) . '</div>';
-            } else {
-                echo '<div class="preloader-text">' . wp_kses_post($preloader_text) . '</div>';
-            }
-        }
-
-        echo '</div>';
-        // Output custom CSS scoped to the preloader
-        if (!empty($custom_css)) {
-            // Clean the CSS input
-            $clean_css = wp_strip_all_tags($custom_css);
-
-            // Split CSS into individual rules
-            $rules = array_filter(array_map('trim', explode('}', $clean_css)));
-
-            $scoped_css = '';
-            foreach ($rules as $rule) {
-                // Skip empty rules and @-rules
-                if (empty($rule) || strpos(trim($rule), '@') === 0) {
-                    continue;
-                }
-
-                // Split into selector and properties
-                $parts = explode('{', $rule);
-                if (count($parts) < 2) {
-                    continue;
-                }
-
-                $selector = trim($parts[0]);
-                $properties = trim($parts[1]);
-
-                // Handle multiple selectors
-                $selectors = array_map('trim', explode(',', $selector));
-                $scoped_selectors = [];
-
-                foreach ($selectors as $s) {
-                    // Skip keyframe animations and media queries
-                    if (strpos($s, '@') === 0) {
-                        $scoped_selectors[] = $s;
-                        continue;
-                    }
-
-                    // Prepend #advanced-preloader unless already nested
-                    $scoped_selectors[] = "#advanced-preloader $s";
-                }
-
-                $scoped_css .= implode(', ', $scoped_selectors) . " { $properties }\n";
-            }
-
-            echo '<style>' . esc_html($scoped_css) . '</style>';
-        }
+    // Check if preloader is enabled and we're not on AMP
+    if (!isset($general['enabled']) || $general['enabled'] !== '1' || function_exists('is_amp_endpoint') && is_amp_endpoint()) {
+        return;
     }
+
+    // Validate and sanitize values
+    $preloader_type = in_array($general['type'] ?? 'image', ['image', 'text', 'both']) ? $general['type'] : 'image';
+    $layout_order = in_array($general['layout_order'] ?? 'image-over-text', [
+        'image-over-text',
+        'image-left-text',
+        'image-right-text',
+        'image-below-text'
+    ]) ? $general['layout_order'] : 'image-over-text';
+
+    // Prepare preloader content
+    $output = '<div id="advanced-preloader" 
+        class="' . esc_attr($layout_order) . '"
+        data-delay="' . esc_attr($animation['delay_time'] ?? '0') . 's" 
+        style="background-color: ' . esc_attr($design['bg_color'] ?? '#ffffff') . '; color: ' . esc_attr($design['text_color'] ?? '#000000') . ';">';
+
+    // Image output
+    if (($preloader_type === 'image' || $preloader_type === 'both') && !empty($general['image'])) {
+        $image_id = $general['image'];
+        $image_url = !empty($image_id) ? wp_get_attachment_url($image_id) : '';
+        $output .= '<img src="' . $image_url . '" alt="' . esc_attr__('Loading...', 'advanced-preloader') . '" class="preloader-image" />';
+    }
+
+    // Text output
+    if (($preloader_type === 'text' || $preloader_type === 'both') && !empty($general['text'])) {
+        $text_content = wp_kses_post($general['text']);
+        $display_mode = in_array($general['text_display_mode'] ?? 'full', ['full', 'random']) ? $general['text_display_mode'] : 'full';
+
+        if ($display_mode === 'random') {
+            $lines = array_filter(array_map('trim', explode("\n", $text_content)));
+            $text_content = !empty($lines) ? $lines[array_rand($lines)] : __('Loading...', 'advanced-preloader');
+        }
+
+        $output .= '<div class="preloader-text">' . $text_content . '</div>';
+    }
+
+    $output .= '</div>';
+
+    // Dynamic CSS handling
+    //$custom_css = wp_strip_all_tags($advanced['custom_css'] ?? '');
+    $custom_css = isset($advanced['custom_css']) ? $advanced['custom_css'] : '';
+    $custom_css = isset($advanced['custom_css']) ? $advanced['custom_css'] : '';
+    if (!empty($custom_css)) {
+        // Clean the CSS input
+        $clean_css = wp_strip_all_tags($custom_css);
+
+        // Split CSS into individual rules
+        $rules = array_filter(array_map('trim', explode('}', $clean_css)));
+
+        $scoped_css = '';
+        foreach ($rules as $rule) {
+            // Skip empty rules and @-rules
+            if (empty($rule) || strpos(trim($rule), '@') === 0) {
+                continue;
+            }
+
+            // Split into selector and properties
+            $parts = explode('{', $rule);
+            if (count($parts) < 2) {
+                continue;
+            }
+
+            $selector = trim($parts[0]);
+            $properties = trim($parts[1]);
+
+            // Handle multiple selectors
+            $selectors = array_map('trim', explode(',', $selector));
+            $scoped_selectors = [];
+
+            foreach ($selectors as $s) {
+                // Skip keyframe animations and media queries
+                if (strpos($s, '@') === 0) {
+                    $scoped_selectors[] = $s;
+                    continue;
+                }
+
+                // Prepend #advanced-preloader unless already nested
+                $scoped_selectors[] = "#advanced-preloader $s";
+            }
+
+            $scoped_css .= implode(', ', $scoped_selectors) . " { $properties }\n";
+        }
+
+        echo '<style>' . esc_html($scoped_css) . '</style>';
+    }
+    // Escape the final output
+    echo wp_kses_post($output);
 }
 add_action('wp_footer', 'advanced_preloader_display');

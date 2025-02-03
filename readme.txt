@@ -7,12 +7,11 @@ Stable tag: 1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A highly customizable preloader plugin for WordPress that helps improve user experience by displaying beautiful loading animations while your site content loads.
+A customizable WordPress preloader plugin that enhances user experience with beautiful loading animations while your site content loads.
 
 == Description ==
 
-The Advanced Preloader plugin is a powerful yet simple solution for adding professional loading animations to your WordPress website. Designed with both simplicity and flexibility in mind, this plugin offers a wide range of customization options to match your site's design and branding.
-
+The Advanced Preloader plugin adds customizable loading animations to your WordPress site, offering flexibility to match your design and branding needs.
 = Key Features =
 
 * Multiple Display Options:

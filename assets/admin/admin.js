@@ -45,7 +45,8 @@ jQuery(document).ready(function ($) {
 
         mediaUploader.on("select", function () {
             const attachment = mediaUploader.state().get("selection").first().toJSON();
-            $("#advanced_preloader_image").val(attachment.url);
+            console.log(attachment);
+            $("#advanced_preloader_image").val(attachment.id); 
             $("#preloader_image_preview").html(
                 `<img src="${attachment.url}" style="max-width: 200px; height: auto;" />`
             );

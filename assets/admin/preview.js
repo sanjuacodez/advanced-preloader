@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
   function updatePreview() {
     const data = {
       type: getSafeValue("#preloader_type", defaults.type),
-      image: getSafeValue("#advanced_preloader_image", ""),
+      image: getSafeValue("#advanced_preloader_image_url", ""),
       text: getSafeValue("#advanced_preloader_text", "Loading..."),
       layout: getSafeValue("#layout_order", defaults.layout),
       bg_color: getSafeValue(
