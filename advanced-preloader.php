@@ -38,7 +38,57 @@ function advanced_preloader_admin_scripts($hook)
     }
 }
 add_action('admin_enqueue_scripts', 'advanced_preloader_admin_scripts');
+function advanced_preloader_sanitize_settings($input) {
+    // Initialize an array to store sanitized data
+    $sanitized_input = [];
 
+    // Sanitize each field based on its type
+    if (isset($input['enabled'])) {
+        $sanitized_input['enabled'] = sanitize_text_field($input['enabled']);
+    }
+
+    if (isset($input['type'])) {
+        $sanitized_input['type'] = sanitize_key($input['type']);
+    }
+
+    if (isset($input['image'])) {
+        $sanitized_input['image'] = esc_url_raw($input['image']);
+    }
+
+    if (isset($input['text'])) {
+        $sanitized_input['text'] = wp_kses_post($input['text']);
+    }
+
+    if (isset($input['layout_order'])) {
+        $sanitized_input['layout_order'] = sanitize_key($input['layout_order']);
+    }
+
+    if (isset($input['bg_color'])) {
+        $sanitized_input['bg_color'] = sanitize_hex_color($input['bg_color']);
+    }
+
+    if (isset($input['text_color'])) {
+        $sanitized_input['text_color'] = sanitize_hex_color($input['text_color']);
+    }
+
+    if (isset($input['animation_speed'])) {
+        $sanitized_input['animation_speed'] = sanitize_text_field($input['animation_speed']);
+    }
+
+    if (isset($input['delay_time'])) {
+        $sanitized_input['delay_time'] = sanitize_text_field($input['delay_time']);
+    }
+
+    if (isset($input['custom_css'])) {
+        $sanitized_input['custom_css'] = wp_strip_all_tags($input['custom_css']);
+    }
+
+    if (isset($input['text_display_mode'])) {
+        $sanitized_input['text_display_mode'] = sanitize_key($input['text_display_mode']);
+    }
+
+    return $sanitized_input;
+}
 // Add plugin settings page to main menu
 function advanced_preloader_settings_menu()
 {
@@ -50,7 +100,14 @@ add_action('admin_menu', 'advanced_preloader_settings_menu');
 function advanced_preloader_settings_page()
 {
     $tabs = ['general', 'design', 'animation', 'advanced'];
-    $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'general';
+    $active_tab = 'general'; // Default value
+
+    if (isset($_GET['tab'])) {
+        // Verify nonce
+        if (wp_verify_nonce($_GET['_wpnonce'], 'advanced-preloader-tab-nonce')) {
+            $active_tab = sanitize_key(wp_unslash($_GET['tab']));
+        }
+    }
     ?>
     <div class="wrap">
         <h1>Advanced Preloader Settings</h1>
@@ -66,9 +123,9 @@ function advanced_preloader_settings_page()
 
         <h2 class="nav-tab-wrapper">
             <?php foreach ($tabs as $tab): ?>
-                <a href="?page=advanced-preloader&tab=<?php echo $tab; ?>"
+                <a href="<?php echo esc_url(wp_nonce_url(add_query_arg('tab', $tab), 'advanced-preloader-tab-nonce')); ?>"
                     class="nav-tab <?php echo $active_tab === $tab ? 'nav-tab-active' : ''; ?>">
-                    <?php echo ucfirst($tab); ?>
+                    <?php echo esc_html(ucfirst($tab)); ?>
                 </a>
             <?php endforeach; ?>
         </h2>
@@ -94,7 +151,11 @@ function advanced_preloader_register_settings()
 {
     $tabs = ['general', 'design', 'animation', 'advanced'];
     foreach ($tabs as $tab) {
-        register_setting('advanced_preloader_settings_group_' . $tab, 'advanced_preloader_' . $tab);
+        register_setting(
+            'advanced_preloader_settings_group_' . $tab,
+            'advanced_preloader_' . $tab,
+            'advanced_preloader_sanitize_settings' // Add the sanitization callback
+        );
     }
 
     // General Settings
