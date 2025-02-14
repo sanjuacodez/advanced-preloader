@@ -8,7 +8,7 @@ A highly customizable preloader plugin for WordPress that helps improve user exp
 **Tags:** preloader, loading, animation, UX, performance  
 **Requires at least:** WordPress 5.0  
 **Tested up to:** WordPress 6.7  
-**Stable tag:** 1.2  
+**Stable tag:** 1.3  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
 

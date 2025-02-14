@@ -3,7 +3,7 @@ Contributors: Sanjay Shankar
 Tags: preloader, loading, animation, UX, performance
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 1.2
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,9 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 5. Live Preview in Admin Panel
 
 == Changelog ==
+
+= 1.3 =
+* Improved UX
 
 = 1.2 =
 * Added random text line display mode

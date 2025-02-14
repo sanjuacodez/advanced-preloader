@@ -1,11 +1,10 @@
 <?php
 /*
 Plugin Name: Advanced Preloader
-Plugin URI: https://acodez.in
+Plugin URI: https://sanjayshankar.me
 Description: A customizable preloader plugin with image and text options.
-Version: 1.2
+Version: 1.3
 Author: Sanjay Shankar
-Author URI: https://acodez.in
 License: GPL2
 */
 
