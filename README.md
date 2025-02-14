@@ -79,6 +79,9 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 
 ## Changelog
 
+### 1.3
+- Improved UX
+
 ### 1.2
 - Added random text line display mode
 - Improved responsive preview system
