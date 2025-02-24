@@ -40,7 +40,6 @@ The Advanced Preloader plugin is a powerful yet simple solution for adding profe
 - Real-time updates as you customize
 
 🎛️ **Advanced Controls:**
-- Custom CSS field for advanced styling
 - Enable/disable preloader with one click
 - Media uploader integration
 - Color picker for easy color selection
@@ -74,8 +73,7 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 1. General Settings Screen
 2. Design Customization Options
 3. Animation Settings
-4. Advanced CSS Configuration
-5. Live Preview in Admin Panel
+4. Live Preview in Admin Panel
 
 ## Changelog
 

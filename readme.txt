@@ -36,7 +36,6 @@ The Advanced Preloader plugin adds customizable loading animations to your WordP
   - Real-time updates as you customize
 
 * Advanced Controls:
-  - Custom CSS field for advanced styling
   - Enable/disable preloader with one click
   - Media uploader integration
   - Color picker for easy color selection
@@ -88,7 +87,6 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 * Added more layout options
 
 = 1.1 =
-* Added custom CSS field
 * Improved media uploader integration
 * Fixed color picker implementation
 * Enhanced mobile responsiveness
