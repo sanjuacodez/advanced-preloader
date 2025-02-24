@@ -3,7 +3,7 @@
 Plugin Name: Advanced Preloader
 Plugin URI: https://sanjayshankar.me
 Description: A customizable preloader plugin with image and text options.
-Version: 1.3
+Version: 1.3.1
 Author: Sanjay Shankar
 License: GPL2
 */
@@ -98,7 +98,7 @@ function advanced_preloader_settings_menu()
 {
     add_menu_page(
         'Advanced Preloader Settings',
-        'Advanced Preloader',
+        'Preloader',
         'manage_options',
         'advanced-preloader',
         'advanced_preloader_settings_page',
@@ -110,7 +110,7 @@ add_action('admin_menu', 'advanced_preloader_settings_menu');
 // Display settings page with tabs
 function advanced_preloader_settings_page()
 {
-    $tabs = ['general', 'design', 'animation', 'advanced'];
+    $tabs = ['general', 'design', 'animation'];
     $active_tab = isset($_GET['tab']) ? sanitize_key(wp_unslash($_GET['tab'])) : 'general';
 
     // Verify nonce for tab navigation if tab parameter exists
@@ -170,7 +170,7 @@ function advanced_preloader_settings_page()
 // Register settings
 function advanced_preloader_register_settings()
 {
-    $tabs = ['general', 'design', 'animation', 'advanced'];
+    $tabs = ['general', 'design', 'animation'];
     foreach ($tabs as $tab) {
         register_setting(
             'advanced_preloader_settings_group_' . $tab,
@@ -198,10 +198,7 @@ function advanced_preloader_register_settings()
     add_settings_field('animation_speed', 'Animation Speed', 'advanced_preloader_animation_speed_field', 'advanced-preloader-animation', 'advanced_preloader_animation_section');
     add_settings_field('delay_time', 'Delay Time', 'advanced_preloader_delay_time_field', 'advanced-preloader-animation', 'advanced_preloader_animation_section');
 
-    // Advanced Settings
-    add_settings_section('advanced_preloader_advanced_section', 'Advanced Settings', null, 'advanced-preloader-advanced');
-    add_settings_field('custom_css', 'Custom CSS', 'advanced_preloader_custom_css_field', 'advanced-preloader-advanced', 'advanced_preloader_advanced_section');
-}
+    }
 add_action('admin_init', 'advanced_preloader_register_settings');
 
 // Callback functions for settings fields
@@ -302,19 +299,12 @@ function advanced_preloader_delay_time_field()
     echo '<input type="text" name="advanced_preloader_animation[delay_time]" value="' . esc_attr($delay) . '" />';
 }
 
-function advanced_preloader_custom_css_field()
-{
-    $options = get_option('advanced_preloader_advanced');
-    $css = isset($options['custom_css']) ? $options['custom_css'] : '';
-    echo '<textarea name="advanced_preloader_advanced[custom_css]" rows="5" cols="50">' . esc_textarea(wp_strip_all_tags($css)) . '</textarea>';
-}
 function advanced_preloader_display()
 {
     // Get all options in single calls
     $general = get_option('advanced_preloader_general', []);
     $design = get_option('advanced_preloader_design', []);
     $animation = get_option('advanced_preloader_animation', []);
-    $advanced = get_option('advanced_preloader_advanced', []);
 
     // Check if preloader is enabled and we're not on AMP
     if (!isset($general['enabled']) || $general['enabled'] !== '1' || function_exists('is_amp_endpoint') && is_amp_endpoint()) {
@@ -358,54 +348,6 @@ function advanced_preloader_display()
 
     $output .= '</div>';
 
-    // Dynamic CSS handling
-    //$custom_css = wp_strip_all_tags($advanced['custom_css'] ?? '');
-    $custom_css = isset($advanced['custom_css']) ? $advanced['custom_css'] : '';
-    $custom_css = isset($advanced['custom_css']) ? $advanced['custom_css'] : '';
-    if (!empty($custom_css)) {
-        // Clean the CSS input
-        $clean_css = wp_strip_all_tags($custom_css);
-
-        // Split CSS into individual rules
-        $rules = array_filter(array_map('trim', explode('}', $clean_css)));
-
-        $scoped_css = '';
-        foreach ($rules as $rule) {
-            // Skip empty rules and @-rules
-            if (empty($rule) || strpos(trim($rule), '@') === 0) {
-                continue;
-            }
-
-            // Split into selector and properties
-            $parts = explode('{', $rule);
-            if (count($parts) < 2) {
-                continue;
-            }
-
-            $selector = trim($parts[0]);
-            $properties = trim($parts[1]);
-
-            // Handle multiple selectors
-            $selectors = array_map('trim', explode(',', $selector));
-            $scoped_selectors = [];
-
-            foreach ($selectors as $s) {
-                // Skip keyframe animations and media queries
-                if (strpos($s, '@') === 0) {
-                    $scoped_selectors[] = $s;
-                    continue;
-                }
-
-                // Prepend #advanced-preloader unless already nested
-                $scoped_selectors[] = "#advanced-preloader $s";
-            }
-
-            $scoped_css .= implode(', ', $scoped_selectors) . " { $properties }\n";
-        }
-
-        echo '<style>' . esc_html($scoped_css) . '</style>';
-    }
-    // Escape the final output
     echo wp_kses_post($output);
 }
 add_action('wp_footer', 'advanced_preloader_display');

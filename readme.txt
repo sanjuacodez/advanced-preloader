@@ -3,7 +3,7 @@ Contributors: Sanjay Shankar
 Tags: preloader, loading, animation, UX, performance
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,10 +70,12 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 1. General Settings Screen
 2. Design Customization Options
 3. Animation Settings
-4. Advanced CSS Configuration
-5. Live Preview in Admin Panel
+4. Live Preview in Admin Panel
 
 == Changelog ==
+
+= 1.3.1 =
+* Fixed Security bugs
 
 = 1.3 =
 * Improved UX
