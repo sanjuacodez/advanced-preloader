@@ -1,101 +1,92 @@
 jQuery(document).ready(function ($) {
+  const loaders = (window.advancedPreloaderAdmin && window.advancedPreloaderAdmin.loaders) || {};
   const defaults = {
     bg_color: "#ffffff",
     text_color: "#000000",
-    animation_speed: "1s",
     type: "image",
     layout: "image-over-text",
     display_mode: "full",
+    loader_style: "spinner",
+    loader_size: "medium",
   };
 
   function getSafeValue(selector, fallback) {
     const element = $(selector);
-    return element.length ? element.val() : fallback;
+    const value = element.length ? element.val() : "";
+    return value ? value : fallback;
   }
 
-  // Update preview function
   function updatePreview() {
     const data = {
       type: getSafeValue("#preloader_type", defaults.type),
       image: getSafeValue("#advanced_preloader_image_url", ""),
       text: getSafeValue("#advanced_preloader_text", "Loading..."),
       layout: getSafeValue("#layout_order", defaults.layout),
-      bg_color: getSafeValue(
-        'input[name="advanced_preloader_design[bg_color]"]',
-        defaults.bg_color
-      ),
-      text_color: getSafeValue(
-        'input[name="advanced_preloader_design[text_color]"]',
-        defaults.text_color
-      ),
-      animation_speed: getSafeValue(
-        'input[name="advanced_preloader_animation[animation_speed]"]',
-        defaults.animation_speed
-      ),
+      bg_color: getSafeValue('input[name="advanced_preloader_design[bg_color]"]', defaults.bg_color),
+      text_color: getSafeValue('input[name="advanced_preloader_design[text_color]"]', defaults.text_color),
+      loader_color: getSafeValue('input[name="advanced_preloader_design[loader_color]"]', ""),
+      loader_size: getSafeValue("#ap_loader_size", defaults.loader_size),
+      loader_style:
+        $('input[name="advanced_preloader_general[loader_style]"]:checked').val() || defaults.loader_style,
       display_mode: getSafeValue("#text_display_mode", defaults.display_mode),
     };
 
-    // Get random line if needed
+    const hasLoader = data.type === "loader" || data.type === "loader_text";
+    const hasImage = data.type === "image" || data.type === "both";
+    const hasText = data.type === "text" || data.type === "both" || data.type === "loader_text";
+
     let displayText = data.text;
     if (data.display_mode === "random") {
       const lines = data.text.split("\n").filter((line) => line.trim() !== "");
-      displayText =
-        lines[Math.floor(Math.random() * lines.length)] || data.text;
+      displayText = lines[Math.floor(Math.random() * lines.length)] || data.text;
     }
 
-    // Update preview content
-    $("#preloader-preview").html(`
-            <div class="preloader-preview" 
-                 style="background-color: ${data.bg_color}; 
-                        color: ${data.text_color};
-                        animation-duration: ${
-                          data.animation_speed
-                        }"><div class="preview-inner  ${data.layout}">
-                ${
-                  data.type !== "text" && data.image
-                    ? `<img src="${data.image}" alt="Preview" />`
-                    : ""
-                }
-                ${
-                  data.type !== "image"
-                    ? `<div class="preloader-text">${displayText}</div></div>`
-                    : ""
-                }
-            </div>
-        `);
+    const $inner = $('<div class="preview-inner"></div>').addClass(data.layout);
+    if (hasLoader && loaders[data.loader_style]) {
+      $inner.append(loaders[data.loader_style]);
+    } else if (hasImage && data.image) {
+      $inner.append($("<img alt=\"\" />").attr("src", data.image));
+    }
+    if (hasText) {
+      // The text field allows HTML on the site, so the preview renders it the same way.
+      $inner.append($('<div class="preloader-text"></div>').html(displayText));
+    }
 
-    // Adjust scaling
-    const laptopWidth = $(".laptop-screen").width();
-    const scaleFactor = laptopWidth / 1920; // 1920 is our reference size
-    $(".preview-inner").css({
-      transform: `scale(${scaleFactor})`,
-    });
+    const $screen = $('<div class="preloader-preview"></div>')
+      .addClass("ap-size-" + data.loader_size)
+      .css({
+        backgroundColor: data.bg_color,
+        color: data.text_color,
+        "--ap-loader-color": data.loader_color || data.text_color,
+      })
+      .append($inner);
+
+    $("#preloader-preview").empty().append($screen);
+
+    // Shrink the content to the frame, but keep it large enough to judge the style.
+    const scaleFactor = Math.min(1, $(".laptop-screen").width() / 640);
+    $(".preview-inner").css({ transform: `scale(${scaleFactor})` });
   }
+
   $(document).on("click", ".nav-tab", function () {
-    setTimeout(updatePreview, 100); // Wait for tab content to render
+    setTimeout(updatePreview, 100);
   });
 
-  // Watch for changes
-  const watchedElements = [
+  [
     "#preloader_type",
-    "#advanced_preloader_image",
+    "#advanced_preloader_image_url",
     "#advanced_preloader_text",
     "#layout_order",
     'input[name="advanced_preloader_design[bg_color]"]',
     'input[name="advanced_preloader_design[text_color]"]',
-    'input[name="advanced_preloader_animation[animation_speed]"]',
+    'input[name="advanced_preloader_design[loader_color]"]',
+    "#ap_loader_size",
+    'input[name="advanced_preloader_general[loader_style]"]',
     "#text_display_mode",
-  ];
-
-  watchedElements.forEach((selector) => {
+  ].forEach((selector) => {
     $(document).on("change input", selector, updatePreview);
   });
 
-  // Handle window resize
-  $(window).resize(function () {
-    updatePreview();
-  });
-
-  // Initial update
+  $(window).on("resize", updatePreview);
   updatePreview();
 });

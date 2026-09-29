@@ -101,3 +101,103 @@
   max-width: 100px;
   height: auto;
 }
+
+/* ---- Loader style picker ---- */
+.ap-loader-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 10px;
+  max-width: 560px;
+}
+.ap-loader-option {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 8px 12px;
+  border: 1px solid #c3c4c7;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.ap-loader-option:hover {
+  border-color: #2271b1;
+}
+.ap-loader-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.ap-loader-option.is-selected,
+.ap-loader-option:has(input:checked) {
+  border-color: #2271b1;
+  box-shadow: 0 0 0 1px #2271b1;
+  background: #f0f6fc;
+}
+.ap-loader-option:has(input:focus-visible) {
+  outline: 2px solid #2271b1;
+  outline-offset: 2px;
+}
+.ap-loader-swatch {
+  --ap-size: 28px;
+  --ap-loader-color: #2271b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  color: #2271b1;
+}
+.ap-loader-swatch .ap-loader-progress {
+  width: 84px;
+}
+.ap-loader-name {
+  font-size: 12px;
+  color: #1d2327;
+}
+
+/* ---- Page picker ---- */
+.ap-page-picker {
+  max-width: 420px;
+}
+.ap-page-filter {
+  width: 100%;
+  margin-bottom: 6px;
+}
+.ap-page-list {
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid #c3c4c7;
+  border-radius: 4px;
+  background: #fff;
+}
+.ap-page-list li {
+  margin: 0;
+  padding: 3px 0;
+}
+
+/* Preview: loaders scale with the mock page */
+#preloader-preview .preview-inner {
+  gap: 20px;
+}
+
+/* Keep the form clear of the fixed live preview on wide screens... */
+@media (min-width: 1100px) {
+  .advanced-preloader-settings .nav-tab-wrapper,
+  .advanced-preloader-settings .tab-content-wrapper {
+    margin-right: 540px;
+  }
+}
+/* ...and put it above the form on narrower ones instead of on top of it. */
+@media (max-width: 1099px) {
+  .preloader-preview-container {
+    position: static;
+    width: 100%;
+    max-width: 480px;
+    transform: none !important;
+    margin: 0 0 20px;
+  }
+}
