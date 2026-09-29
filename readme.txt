@@ -1,9 +1,9 @@
 === Advanced Preloader ===
-Contributors: Sanjay Shankar
+Contributors: Sanju Shankar
 Tags: preloader, loading, animation, UX, performance
 Requires at least: 5.0
-Tested up to: 6.7
-Stable tag: 1.3.1
+Tested up to: 6.8.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,9 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 4. Live Preview in Admin Panel
 
 == Changelog ==
+
+= 1.3.2 =
+* Added WordPress 6.8.1 support
 
 = 1.3.1 =
 * Fixed Security bugs
