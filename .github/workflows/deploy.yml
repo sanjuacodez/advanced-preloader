@@ -1,0 +1,42 @@
+name: Deploy to WordPress.org
+
+# Release flow:
+#   1. Bump "Version" in the plugin header and "Stable tag" in readme.txt.
+#   2. Commit and push to main.
+#   3. Tag it:  git tag vX.Y.Z && git push origin vX.Y.Z
+# The tag deploys the code to SVN trunk + tags/X.Y.Z, and syncs .wordpress-org/
+# to the SVN assets folder (banner, icons, screenshots, blueprint).
+#
+# Needs repository secrets SVN_USERNAME and SVN_PASSWORD (WordPress.org account
+# "sanju-shankar"; the password is the SVN password from your WordPress.org
+# profile -> Account & Security, not the login password).
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag matches the plugin version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          stable=$(grep -m1 -i '^Stable tag:' readme.txt | awk '{print $NF}')
+          if [ "$tag" != "$stable" ]; then
+            echo "::error::Tag $tag does not match Stable tag $stable in readme.txt"
+            exit 1
+          fi
+
+      - name: Deploy to the plugin directory
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: advanced-preloader
+          ASSETS_DIR: .wordpress-org

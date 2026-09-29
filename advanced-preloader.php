@@ -3,7 +3,8 @@
 Plugin Name: Advanced Preloader
 Plugin URI: https://sanjayshankar.me
 Description: A customizable preloader plugin with image and text options.
-Version: 1.3.2
+Version: 1.3.3
+Requires PHP: 7.0
 Author: Sanjay Shankar
 License: GPL2
 */
@@ -312,13 +313,19 @@ function advanced_preloader_display()
     }
 
     // Validate and sanitize values
-    $preloader_type = in_array($general['type'] ?? 'image', ['image', 'text', 'both']) ? $general['type'] : 'image';
-    $layout_order = in_array($general['layout_order'] ?? 'image-over-text', [
+    $preloader_type = $general['type'] ?? 'image';
+    if (!in_array($preloader_type, ['image', 'text', 'both'], true)) {
+        $preloader_type = 'image';
+    }
+    $layout_order = $general['layout_order'] ?? 'image-over-text';
+    if (!in_array($layout_order, [
         'image-over-text',
         'image-left-text',
         'image-right-text',
         'image-below-text'
-    ]) ? $general['layout_order'] : 'image-over-text';
+    ], true)) {
+        $layout_order = 'image-over-text';
+    }
 
     // Prepare preloader content
     $output = '<div id="advanced-preloader" 

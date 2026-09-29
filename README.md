@@ -7,7 +7,7 @@ A highly customizable preloader plugin for WordPress that helps improve user exp
 **Contributors:** Sanjay Shankar  
 **Tags:** preloader, loading, animation, UX, performance  
 **Requires at least:** WordPress 5.0  
-**Tested up to:** WordPress 6.7  
+**Tested up to:** WordPress 7.1  
 **Stable tag:** 1.3.1  
 **License:** GPLv2 or later  
 **License URI:** https://www.gnu.org/licenses/gpl-2.0.html
