@@ -45,7 +45,7 @@ The Advanced Preloader plugin adds customizable loading animations to your WordP
 
 1. Upload the plugin files to the `/wp-content/plugins/advanced-preloader` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Go to Settings → Advanced Preloader to configure the plugin
+3. Go to **Preloader** in the admin menu to configure the plugin
 4. Customize your preloader settings and enjoy!
 
 == Frequently Asked Questions ==
@@ -60,7 +60,7 @@ Absolutely! The preloader is fully responsive and works perfectly on all devices
 Yes, the text field supports basic HTML tags for formatting your preloader text.
 
 = How do I change the animation speed? =
-You can adjust the animation speed in the Animation Settings tab of the plugin.
+In the Animation tab, set Animation Speed (how long the fade-out takes) and Delay Time (how long to wait after the page loads). Both accept values like 1s, 0.5s or 500ms.
 
 = Can I use different text each time the preloader appears? =
 Yes! Enable the "Random Line" display mode to show a different line from your text content each time.
@@ -77,6 +77,8 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 = 1.3.3 =
 * Tested with WordPress 7.1
 * Fixed PHP warnings when the preloader is enabled before the type and layout settings are saved
+* Fixed the Animation Speed setting, which was saved but never applied to the fade-out
+* Delay Time and Animation Speed now accept values like 1s, 0.5s or 500ms
 
 = 1.3.2 =
 * Added WordPress 6.8.1 support

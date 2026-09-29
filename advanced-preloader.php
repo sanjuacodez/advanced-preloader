@@ -300,6 +300,19 @@ function advanced_preloader_delay_time_field()
     echo '<input type="text" name="advanced_preloader_animation[delay_time]" value="' . esc_attr($delay) . '" />';
 }
 
+/**
+ * Convert a duration setting such as "1s", "0.5s", "500ms" or "2" (seconds) to milliseconds.
+ */
+function advanced_preloader_to_ms($value, $fallback)
+{
+    $value = strtolower(trim((string) $value));
+    if (!preg_match('/^(\d+(?:\.\d+)?)\s*(ms|s)?$/', $value, $m)) {
+        return $fallback;
+    }
+    $ms = (isset($m[2]) && 'ms' === $m[2]) ? (float) $m[1] : (float) $m[1] * 1000;
+    return (int) min($ms, 60000);
+}
+
 function advanced_preloader_display()
 {
     // Get all options in single calls
@@ -330,7 +343,8 @@ function advanced_preloader_display()
     // Prepare preloader content
     $output = '<div id="advanced-preloader" 
         class="' . esc_attr($layout_order) . '"
-        data-delay="' . esc_attr($animation['delay_time'] ?? '0') . 's" 
+        data-delay="' . esc_attr(advanced_preloader_to_ms($animation['delay_time'] ?? '0s', 0)) . '"
+        data-animation-speed="' . esc_attr(advanced_preloader_to_ms($animation['animation_speed'] ?? '1s', 1000)) . '" 
         style="background-color: ' . esc_attr($design['bg_color'] ?? '#ffffff') . '; color: ' . esc_attr($design['text_color'] ?? '#000000') . ';">';
 
     // Image output

@@ -48,7 +48,7 @@ The Advanced Preloader plugin is a powerful yet simple solution for adding profe
 
 1. Upload the plugin files to the `/wp-content/plugins/advanced-preloader` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Go to Settings → Advanced Preloader to configure the plugin
+3. Go to **Preloader** in the admin menu to configure the plugin
 4. Customize your preloader settings and enjoy!
 
 ## Frequently Asked Questions
