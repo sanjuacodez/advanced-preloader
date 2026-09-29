@@ -7,9 +7,10 @@ name: Deploy to WordPress.org
 # The tag deploys the code to SVN trunk + tags/X.Y.Z, and syncs .wordpress-org/
 # to the SVN assets folder (banner, icons, screenshots, blueprint).
 #
-# Needs repository secrets SVN_USERNAME and SVN_PASSWORD (WordPress.org account
-# "sanju-shankar"; the password is the SVN password from your WordPress.org
-# profile -> Account & Security, not the login password).
+# Needs repository secrets SVN_USERNAME and SVN_PASSWORD. The username is the
+# exact, case-sensitive WordPress.org LOGIN ("Sanju Shankar", with the space) --
+# not the profile slug "sanju-shankar". The password is the SVN password from
+# WordPress.org profile -> Account & Security, not the login password.
 on:
   push:
     tags:
