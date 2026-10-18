@@ -1,0 +1,36 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#fff}svg{display:block}</style></head><body>
+<svg id="P" viewBox="0 0 256 256" width="256" height="256" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <clipPath id="disc"><circle cx="128" cy="128" r="88"/></clipPath>
+  <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#000" flood-opacity=".22"/></filter>
+ </defs>
+ <rect width="256" height="256" fill="#fff"/>
+ <rect id="border" x="5" y="5" width="246" height="246" fill="none" stroke="#1E1E1E" stroke-width="3" stroke-dasharray="10 30" stroke-linecap="round"/>
+ <circle cx="128" cy="128" r="88" fill="#fff" filter="url(#sh)"/>
+ <g clip-path="url(#disc)"><path id="liquid" fill="#1E1E1E"/></g>
+ <path id="check" d="M96 130 L118 152 L162 106" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
+</svg>
+<script>
+const T = 2.4, clamp = (v,a,b)=>Math.max(a,Math.min(b,v)), seg=(t,a,b)=>clamp((t-a)/(b-a),0,1);
+const io = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+const liquid = document.getElementById('liquid'), check = document.getElementById('check'), border = document.getElementById('border');
+window.render = (id, t) => {
+  // Black fills the disc from the top (as in the mark), the wave keeps moving, a check shows "loaded", then it settles back.
+  const down = io(seg(t, .15, 1.15)), up = io(seg(t, 1.65, 2.3));
+  const level = 140 + (232 - 140) * down - (232 - 140) * up;
+  const amp = 12 * (1 - .5 * Math.sin(Math.PI * seg(t, .15, 2.3)));
+  const phase = 2 * Math.PI * 2 * (t / T);
+  let d = 'M30 0 L226 0 L226 ' + level.toFixed(2);
+  for (let x = 226; x >= 30; x -= 4) {
+    const y = level - amp * Math.cos(2 * Math.PI * (x - 128) / 136 + phase);
+    d += ' L' + x + ' ' + y.toFixed(2);
+  }
+  liquid.setAttribute('d', d + ' Z');
+  const c = seg(t, 1.1, 1.3), cOut = seg(t, 1.6, 1.8);
+  check.setAttribute('opacity', (c * (1 - cOut)).toFixed(3));
+  check.setAttribute('stroke-dasharray', '120');
+  check.setAttribute('stroke-dashoffset', (120 * (1 - c)).toFixed(1));
+  border.setAttribute('stroke-dashoffset', (-120 * (t / T)).toFixed(2));
+};
+window.render('P', 0);
+</script></body></html>
