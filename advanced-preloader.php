@@ -3,7 +3,7 @@
 Plugin Name: Advanced Preloader
 Plugin URI: https://sanjayshankar.me
 Description: A customizable preloader with built-in CSS loaders, image and text options, and display rules.
-Version: 1.4.0
+Version: 1.4.1
 Requires PHP: 7.0
 Author: Sanjay Shankar
 License: GPL2

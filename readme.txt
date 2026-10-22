@@ -4,7 +4,7 @@ Tags: preloader, loading, animation, UX, performance
 Requires at least: 5.0
 Tested up to: 7.1
 Requires PHP: 7.0
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,11 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 
 == Changelog ==
 
+= 1.4.1 =
+* New: optional newsletter sign-up from the plugin author on the Preloader settings screen. Nothing is sent unless you click Subscribe, and closing the card hides it for 30 days.
+* New: optional one-question survey when you deactivate the plugin, to help improve it. Skip & deactivate sends nothing.
+* Docs: new External services section in the readme describing both.
+
 = 1.4.0 =
 * New: Six built-in CSS loaders (Spinner, Dual Ring, Bouncing Dots, Bars, Pulse, Progress Bar) with a visual picker, color and size
 * New: Display Rules tab: homepage only, selected pages, excluded pages, once per visit, first visit only, hide for logged-in users
@@ -147,6 +152,9 @@ Yes! Enable the "Random Line" display mode to show a different line from your te
 * Initial release of Advanced Preloader
 
 == Upgrade Notice ==
+
+= 1.4.1 =
+Adds an optional author newsletter sign-up and an optional deactivation survey. No changes to your preloader or its settings.
 
 = 1.4.0 =
 Adds six built-in CSS loaders and display rules (choose pages, once per visit, hide for logged-in users). Your existing settings are kept.
