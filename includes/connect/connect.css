@@ -1,0 +1,625 @@
+/*
+ * "Plugins by Sanjay Shankar" newsletter card and settings box.
+ * Colours follow sanjayshankar.me: ink black, warm yellow and pastel tags.
+ * The layout responds to the card's own width (container queries), so it
+ * fits narrow admin screens, sidebars and zoomed-in browsers alike.
+ */
+
+.sanjayshankar-connect,
+.sanjayshankar-survey {
+	--ssc-ink: #111111;
+	--ssc-muted: #6b6b6b;
+	--ssc-line: #e6e6e4;
+	--ssc-yellow: #fbe29d;
+	--ssc-yellow-hover: #f7d672;
+	/* Form panel colours; one theme is picked at random per page load. */
+	--ssc-panel: #bce3ba;
+	--ssc-panel-soft: rgba(17, 17, 17, 0.68);
+	--ssc-button: #fbe29d;
+	--ssc-button-ink: #111111;
+	--ssc-button-hover: #f7d672;
+}
+
+.sanjayshankar-connect {
+	position: relative;
+	box-sizing: border-box;
+	margin: 0 0 20px;
+	padding: 24px;
+	border: 1px solid var(--ssc-line);
+	border-radius: 16px;
+	background: #fff;
+	color: var(--ssc-ink);
+	container-type: inline-size;
+	container-name: ssc-card;
+	transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sanjayshankar-connect *,
+.sanjayshankar-connect *::before,
+.sanjayshankar-connect *::after {
+	box-sizing: border-box;
+}
+
+.sanjayshankar-connect.is-leaving {
+	opacity: 0;
+	transform: translateY(-4px);
+}
+
+/* One column, or intro and form side by side once the card is wide enough. */
+.sanjayshankar-connect__inner {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 20px;
+	align-items: center;
+}
+
+@container ssc-card (min-width: 820px) {
+	.sanjayshankar-connect__inner {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 32px;
+	}
+
+	.sanjayshankar-connect__intro {
+		padding: 0 8px;
+	}
+
+	/* Keep the close button clear of the black panel. */
+	.sanjayshankar-connect--card .sanjayshankar-connect__inner {
+		padding-right: 40px;
+	}
+}
+
+/* Intro */
+
+.sanjayshankar-connect__byline {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 14px;
+	padding-right: 40px;
+}
+
+.sanjayshankar-connect__avatar {
+	flex: none;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	object-fit: cover;
+	box-shadow: 0 0 0 3px var(--ssc-yellow);
+}
+
+.sanjayshankar-connect__byline > span {
+	display: grid;
+	gap: 2px;
+	min-width: 0;
+}
+
+.sanjayshankar-connect__name {
+	color: var(--ssc-ink);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.sanjayshankar-connect__eyebrow {
+	color: var(--ssc-muted);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.sanjayshankar-connect h2 {
+	margin: 0 0 8px;
+	padding: 0;
+	color: var(--ssc-ink);
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: -0.01em;
+	line-height: 1.25;
+}
+
+.sanjayshankar-connect__lead {
+	margin: 0 0 16px;
+	max-width: 560px;
+	color: var(--ssc-muted);
+	font-size: 14px;
+	line-height: 1.55;
+}
+
+.sanjayshankar-connect__perks {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.sanjayshankar-connect__perks li {
+	margin: 0;
+	padding: 5px 12px;
+	border-radius: 999px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.sanjayshankar-connect__perks .is-yellow {
+	background: #fbe29d;
+	color: #6b5900;
+}
+
+.sanjayshankar-connect__perks .is-blue {
+	background: #a6dcf4;
+	color: #0f4c81;
+}
+
+.sanjayshankar-connect__perks .is-green {
+	background: #bce3ba;
+	color: #2b5c2c;
+}
+
+.sanjayshankar-connect__perks .is-purple {
+	background: #decbf5;
+	color: #57308d;
+}
+
+/* Form: a black panel */
+
+.sanjayshankar-connect__form {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 14px;
+	margin: 0;
+	padding: 22px;
+	border-radius: 14px;
+	background: var(--ssc-panel);
+	color: var(--ssc-ink);
+}
+
+.sanjayshankar-connect__form p {
+	margin: 0;
+}
+
+.sanjayshankar-connect__field {
+	min-width: 0;
+}
+
+.sanjayshankar-connect__field label {
+	display: block;
+	margin-bottom: 6px;
+	color: var(--ssc-ink);
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.sanjayshankar-connect__optional {
+	color: var(--ssc-panel-soft);
+	font-weight: 400;
+}
+
+.sanjayshankar-connect .sanjayshankar-connect__field input {
+	display: block;
+	width: 100%;
+	max-width: none;
+	min-height: 44px;
+	margin: 0;
+	padding: 0 14px;
+	border: 1px solid transparent;
+	border-radius: 10px;
+	background: #fff;
+	color: var(--ssc-ink);
+	font-size: 14px;
+	line-height: 1.2;
+	box-shadow: none;
+}
+
+.sanjayshankar-connect .sanjayshankar-connect__field input::placeholder {
+	color: #8a8a8a;
+}
+
+.sanjayshankar-connect .sanjayshankar-connect__field input:focus {
+	border-color: var(--ssc-ink);
+	box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.12);
+	outline: none;
+}
+
+.sanjayshankar-connect__submit,
+.sanjayshankar-connect__fine,
+.sanjayshankar-connect__message {
+	grid-column: 1 / -1;
+}
+
+.sanjayshankar-connect__submit {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px 18px;
+}
+
+.sanjayshankar-connect__button {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 44px;
+	margin: 0;
+	padding: 0 24px;
+	border-radius: 999px;
+	border: 1.5px solid var(--ssc-button-edge, transparent);
+	background: var(--ssc-button);
+	color: var(--ssc-button-ink);
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1;
+	cursor: pointer;
+	transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.sanjayshankar-connect__button:hover {
+	background: var(--ssc-button-hover);
+}
+
+.sanjayshankar-connect__button:active {
+	transform: translateY(1px);
+}
+
+.sanjayshankar-connect__button:disabled {
+	opacity: 0.7;
+	cursor: progress;
+}
+
+.sanjayshankar-connect__later {
+	margin: 0;
+	padding: 4px 0;
+	border: 0;
+	background: none;
+	color: var(--ssc-panel-soft);
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.sanjayshankar-connect__later:hover {
+	color: var(--ssc-ink);
+	text-decoration: underline;
+}
+
+.sanjayshankar-connect__button:focus-visible,
+.sanjayshankar-connect__later:focus-visible,
+.sanjayshankar-connect__fine a:focus-visible {
+	outline: 2px solid var(--ssc-ink);
+	outline-offset: 3px;
+}
+
+.sanjayshankar-connect__fine {
+	position: relative;
+	padding-left: 22px;
+	color: var(--ssc-panel-soft);
+	font-size: 12px;
+	line-height: 1.55;
+}
+
+.sanjayshankar-connect__fine::before {
+	content: "";
+	position: absolute;
+	top: 2px;
+	left: 0;
+	width: 14px;
+	height: 14px;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-opacity='0.6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='11' width='16' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.sanjayshankar-connect__fine a {
+	color: var(--ssc-ink);
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.sanjayshankar-connect__message {
+	font-size: 13px;
+}
+
+.sanjayshankar-connect__message:empty {
+	display: none;
+}
+
+.sanjayshankar-connect__message.is-error {
+	color: #8f1d1d;
+	font-weight: 600;
+}
+
+.sanjayshankar-connect__done {
+	margin: 0;
+	padding: 20px 22px 20px 54px;
+	border-radius: 14px;
+	background:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111111' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12.5l2.7 2.7L16 10'/%3E%3C/svg%3E") 20px center / 22px no-repeat,
+		var(--ssc-panel);
+	color: var(--ssc-ink);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+/*
+ * Name and email side by side whenever the black panel has room: a single
+ * column card from 520px, or the two-column card from 1100px.
+ */
+@container ssc-card (min-width: 520px) and (max-width: 819px) {
+	.sanjayshankar-connect__form {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+	}
+}
+
+@container ssc-card (min-width: 1100px) {
+	.sanjayshankar-connect__form {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+	}
+}
+
+/* Close */
+
+.sanjayshankar-connect__close {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	z-index: 1;
+	display: grid;
+	place-items: center;
+	width: 32px;
+	height: 32px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: #f2f2f0;
+	color: var(--ssc-ink);
+	font-size: 20px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.sanjayshankar-connect__close:hover {
+	background: var(--ssc-line);
+}
+
+.sanjayshankar-connect__close:focus-visible {
+	outline: 2px solid var(--ssc-ink);
+	outline-offset: 2px;
+}
+
+/* Settings box sits below the settings form. */
+.sanjayshankar-connect--box {
+	margin-top: 32px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sanjayshankar-connect,
+	.sanjayshankar-connect__button {
+		transition: none;
+	}
+}
+
+/*
+ * Panel themes from the sanjayshankar.me palette. Text is ink (#111) on every
+ * pastel; the button takes a colour that stands out from its panel.
+ */
+.sanjayshankar-connect.is-theme-green,
+.sanjayshankar-survey.is-theme-green {
+	--ssc-button-edge: #111111;
+	--ssc-panel: #bce3ba;
+}
+
+.sanjayshankar-connect.is-theme-blue,
+.sanjayshankar-survey.is-theme-blue {
+	--ssc-button-edge: #111111;
+	--ssc-panel: #a6dcf4;
+}
+
+.sanjayshankar-connect.is-theme-purple,
+.sanjayshankar-survey.is-theme-purple {
+	--ssc-button-edge: #111111;
+	--ssc-panel: #decbf5;
+}
+
+.sanjayshankar-connect.is-theme-yellow,
+.sanjayshankar-survey.is-theme-yellow {
+	--ssc-panel: #fbe29d;
+	--ssc-button: #111111;
+	--ssc-button-ink: #fbe29d;
+	--ssc-button-hover: #2b2b2b;
+}
+
+.sanjayshankar-connect.is-theme-orange,
+.sanjayshankar-survey.is-theme-orange {
+	--ssc-panel: #ffd5b8;
+	--ssc-button: #111111;
+	--ssc-button-ink: #ffffff;
+	--ssc-button-hover: #2b2b2b;
+}
+
+/* ------------------------------------------------------------------ */
+/* Deactivation survey                                                 */
+/* ------------------------------------------------------------------ */
+
+.sanjayshankar-survey {
+	box-sizing: border-box;
+	width: min(560px, calc(100vw - 32px));
+	max-height: calc(100vh - 48px);
+	padding: 0;
+	border: 0;
+	border-radius: 16px;
+	background: #fff;
+	color: var(--ssc-ink);
+	box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+	overflow: auto;
+}
+
+.sanjayshankar-survey *,
+.sanjayshankar-survey *::before {
+	box-sizing: border-box;
+}
+
+.sanjayshankar-survey::backdrop {
+	background: rgba(17, 17, 17, 0.55);
+}
+
+.sanjayshankar-survey__form {
+	display: grid;
+	gap: 16px;
+	margin: 0;
+	padding: 24px;
+}
+
+.sanjayshankar-survey__head {
+	display: flex;
+	gap: 14px;
+	align-items: flex-start;
+}
+
+.sanjayshankar-survey__head h2 {
+	margin: 0 0 4px;
+	padding: 0;
+	color: var(--ssc-ink);
+	font-size: 18px;
+	font-weight: 700;
+	line-height: 1.3;
+}
+
+.sanjayshankar-survey__head p {
+	margin: 0;
+	color: var(--ssc-muted);
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.sanjayshankar-survey__reasons {
+	display: grid;
+	gap: 8px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.sanjayshankar-survey__reason {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 11px 14px;
+	border: 1.5px solid var(--ssc-line);
+	border-radius: 10px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+.sanjayshankar-survey__reason:hover {
+	border-color: #c3c4c7;
+}
+
+.sanjayshankar-survey__reason:has(input:checked) {
+	border-color: var(--ssc-ink);
+	background: var(--ssc-panel);
+}
+
+.sanjayshankar-survey__reason input {
+	margin: 0;
+}
+
+.sanjayshankar-survey__details label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.sanjayshankar-survey textarea,
+.sanjayshankar-survey__who input {
+	width: 100%;
+	padding: 10px 12px;
+	border: 1px solid #c3c4c7;
+	border-radius: 10px;
+	font-size: 14px;
+}
+
+.sanjayshankar-survey textarea:focus,
+.sanjayshankar-survey__who input:focus {
+	border-color: var(--ssc-ink);
+	box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.12);
+	outline: none;
+}
+
+.sanjayshankar-survey__check {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.sanjayshankar-survey__who {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+	gap: 8px;
+	margin-top: 10px;
+}
+
+.sanjayshankar-survey__who[hidden],
+.sanjayshankar-survey__details[hidden] {
+	display: none;
+}
+
+.sanjayshankar-survey__fine {
+	margin: 0;
+	color: var(--ssc-muted);
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.sanjayshankar-survey__fine a {
+	color: var(--ssc-ink);
+}
+
+.sanjayshankar-survey__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 16px;
+}
+
+.sanjayshankar-survey .sanjayshankar-connect__button:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.sanjayshankar-survey__skip,
+.sanjayshankar-survey__cancel {
+	margin: 0;
+	padding: 4px 0;
+	border: 0;
+	background: none;
+	color: var(--ssc-muted);
+	font-size: 13px;
+	cursor: pointer;
+}
+
+.sanjayshankar-survey__skip:hover,
+.sanjayshankar-survey__cancel:hover {
+	color: var(--ssc-ink);
+	text-decoration: underline;
+}
+
+.sanjayshankar-survey__cancel {
+	margin-left: auto;
+}
+
+.sanjayshankar-survey__skip:focus-visible,
+.sanjayshankar-survey__cancel:focus-visible,
+.sanjayshankar-survey__reason:focus-within {
+	outline: 2px solid var(--ssc-ink);
+	outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+	.sanjayshankar-survey__who {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}

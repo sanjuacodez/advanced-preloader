@@ -14,6 +14,27 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// Shared "Plugins by Sanjay Shankar" newsletter card and deactivation survey.
+require_once __DIR__ . '/includes/connect/connect.php';
+add_filter('sanjayshankar_connect_plugins', 'advanced_preloader_connect_register');
+
+/**
+ * Lists Advanced Preloader in the shared newsletter card and deactivation survey.
+ *
+ * @param array $plugins Slug => details.
+ * @return array
+ */
+function advanced_preloader_connect_register($plugins)
+{
+    $header = get_file_data(__FILE__, array('version' => 'Version'));
+    $plugins['advanced-preloader'] = array(
+        'name'    => 'Advanced Preloader',
+        'file'    => plugin_basename(__FILE__),
+        'version' => $header['version'],
+    );
+    return $plugins;
+}
+
 // Enqueue necessary scripts and styles
 function advanced_preloader_enqueue_scripts()
 {
@@ -164,6 +185,8 @@ function advanced_preloader_settings_page()
     <div class="wrap advanced-preloader-settings">
         <h1>Advanced Preloader Settings</h1>
 
+        <?php do_action('sanjayshankar_connect_card', 'advanced-preloader'); ?>
+
         <!-- Preview container -->
         <div class="preloader-preview-container">
             <div class="laptop-frame">
@@ -195,6 +218,8 @@ function advanced_preloader_settings_page()
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <?php do_action('sanjayshankar_connect_box', 'advanced-preloader'); ?>
     </div>
     <?php
 }

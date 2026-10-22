@@ -52,6 +52,23 @@ The Advanced Preloader plugin adds customizable loading animations to your WordP
   - Media uploader integration
   - Color picker for easy color selection
 
+== External services ==
+
+Advanced Preloader contacts two outside services, and only when an administrator chooses to. Your visitors' browsers never contact them.
+
+**Brevo (newsletter sign-up).** Administrators see a "Plugins by Sanjay Shankar" card at the top of the **Preloader** settings screen, inviting them to join the author's newsletter about new plugins, betas and offers. The same sign-up form is always available on the same screen once the card is closed. The administrator's first name and email are filled in from their profile, but nothing is sent unless they click **Subscribe**. Then the email address, the first name and the name of the plugin the sign-up came from ("Advanced Preloader") are sent from your server to Brevo, the newsletter service. The address is used only to send news about the author's plugins and sanjayshankar.me, is never sold or shared, and every email has an unsubscribe link. Closing the card hides it for 30 days, it stops once the site has subscribed, and it never appears to visitors.
+
+* Service: Brevo (Sendinblue SAS), [brevo.com](https://www.brevo.com/)
+* Brevo terms of use: [brevo.com/legal/termsofuse](https://www.brevo.com/legal/termsofuse/)
+* Brevo privacy policy: [brevo.com/legal/privacypolicy](https://www.brevo.com/legal/privacypolicy/)
+* Plugin author's privacy policy: [sanjayshankar.me/privacy](https://sanjayshankar.me/privacy/)
+
+**Google Apps Script and Google Sheets (deactivation feedback).** When an administrator clicks **Deactivate** for Advanced Preloader, a short optional survey asks why. Nothing is sent if they choose **Skip & deactivate** or **Cancel**. If they choose **Send & deactivate**, the selected reason, any comment, the plugin version, the WordPress, WooCommerce and PHP versions and the admin language are sent from your server to a Google Apps Script web app that stores them in the author's private Google Sheet. The administrator's name and email, shown in the survey, are included while "You can contact me about this" is ticked; unticking it sends the answer anonymously. The site address is never sent.
+
+* Service: Google Apps Script and Google Sheets, by Google LLC
+* Google terms of service: [policies.google.com/terms](https://policies.google.com/terms)
+* Google privacy policy: [policies.google.com/privacy](https://policies.google.com/privacy)
+
 == Installation ==
 
 1. Upload the plugin files to the `/wp-content/plugins/advanced-preloader` directory, or install the plugin through the WordPress plugins screen directly.
